@@ -39,9 +39,13 @@ export function evalCondition(c: Condition, answers: Answers): boolean {
   switch (c.op) {
     case 'answered': return isAnswered(v)
     case 'not_answered': return !isAnswered(v)
-    case 'eq': return Array.isArray(v) ? v.length === 1 && v[0] === c.value : v === c.value
-    case 'neq': return !(Array.isArray(v) ? v.length === 1 && v[0] === c.value : v === c.value)
-    case 'in': return Array.isArray(c.value) && (Array.isArray(v) ? v.some((x) => (c.value as unknown[]).includes(x)) : (c.value as unknown[]).includes(v))
+    // for multiple-choice answers "eq" means "the selection includes the value"
+    case 'eq': return Array.isArray(v) ? v.includes(c.value) : v === c.value
+    case 'neq': return Array.isArray(v) ? !v.includes(c.value) : v !== c.value
+    case 'in': {
+      const list = Array.isArray(c.value) ? c.value : typeof c.value === 'string' ? c.value.split(',').map((x) => x.trim()).filter(Boolean) : []
+      return Array.isArray(v) ? v.some((x) => list.includes(x)) : list.includes(v)
+    }
     case 'contains':
       if (Array.isArray(v)) return v.includes(c.value)
       return typeof v === 'string' && typeof c.value === 'string' && v.includes(c.value)

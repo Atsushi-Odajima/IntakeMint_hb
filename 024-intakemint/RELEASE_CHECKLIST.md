@@ -4,7 +4,7 @@
 
 ## 品質
 - ☑ `npm run typecheck` エラー0
-- ☑ `npm test` 53件 pass（PGlite）
+- ☑ `npm test` 57件 pass（PGlite）
 - ☑ 実PostgreSQL 16 での主要フロー＋Backup/Restore pass
 - ☑ `npm run test:e2e` 24件 pass（desktop / iPhone 13 / Pixel 7 / iPad プロファイル）
 - ☑ MCP stdio スモーク

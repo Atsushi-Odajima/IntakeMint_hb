@@ -31,6 +31,7 @@ export default function CaseDetail() {
   const [prompt, setPrompt] = useState<null | { title: string; label: string; required?: boolean; initial?: string; onOk: (v: string) => Promise<void> }>(null)
   const [pkg, setPkg] = useState<{ id: string; markdown: string } | null>(null)
   const [profile, setProfile] = useState('')
+  const [linkDays, setLinkDays] = useState(14)
   if (error) return <div className="alert alert-danger">{error}</div>
   if (!d) return <div className="empty">読み込み中…</div>
   const c = d.case, comp = d.completeness, def = d.definition
@@ -257,8 +258,10 @@ export default function CaseDetail() {
         <section className="card">
           <div className="card-title"><h2 style={{ margin: 0 }}>共有リンク</h2>
             {can(me, 'link.manage') && <div className="row">
-              <button className="btn btn-sm" onClick={() => run(async () => setLink(await api(`/api/cases/${id}/links`, { body: { revokeExisting: true } })), '再発行しました（古いリンクは無効）')}>再発行（既存を無効化）</button>
-              {c.client_email && <button className="btn btn-sm" onClick={() => run(async () => setLink(await api(`/api/cases/${id}/links`, { body: { requireEmailVerification: true } })), 'メール確認付きリンクを発行しました')}>メール確認付きで発行</button>}
+              <select className="input" style={{ maxWidth: 140, minHeight: 34, padding: 4 }} value={linkDays} onChange={(e) => setLinkDays(Number(e.target.value))} aria-label="有効期限（日）">{[3, 7, 14, 30, 60, 90].map((d) => <option key={d} value={d}>{d}日有効</option>)}</select>
+              <button className="btn btn-sm" onClick={() => run(async () => setLink(await api(`/api/cases/${id}/links`, { body: { days: linkDays } })), '発行しました')}>発行</button>
+              <button className="btn btn-sm" onClick={() => run(async () => setLink(await api(`/api/cases/${id}/links`, { body: { revokeExisting: true, days: linkDays } })), '再発行しました（古いリンクは無効）')}>再発行（既存を無効化）</button>
+              {c.client_email && <button className="btn btn-sm" onClick={() => run(async () => setLink(await api(`/api/cases/${id}/links`, { body: { requireEmailVerification: true, days: linkDays } })), 'メール確認付きリンクを発行しました')}>メール確認付きで発行</button>}
             </div>}
           </div>
           <p className="small muted" style={{ marginTop: 0 }}>リンクには有効期限があり、いつでも無効化できます。リンク本体はサーバーに保存されず、発行時に一度だけ表示されます。</p>

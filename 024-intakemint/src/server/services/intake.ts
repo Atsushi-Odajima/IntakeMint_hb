@@ -92,6 +92,10 @@ export async function uploadFile(ctx: Ctx, actor: Actor, caseId: string, itemId:
     throw badRequest(chk.error!)
   }
   const scan = await ctx.scanner.scan(buf)
+  if (scan === 'error') {
+    await audit(ctx.db, actor, 'file.scan_error', 'case', caseId, { itemId, scanner: ctx.scanner.name })
+    throw badRequest('セキュリティチェックを完了できませんでした。時間をおいて再度お試しください')
+  }
   if (scan === 'infected') {
     await audit(ctx.db, actor, 'file.malware_detected', 'case', caseId, { itemId, scanner: ctx.scanner.name })
     throw badRequest('セキュリティチェックでブロックされました。別のファイルを提出してください')

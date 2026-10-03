@@ -5,9 +5,9 @@
 ## 結果サマリ
 | スイート | コマンド | 結果 |
 |---|---|---|
-| エンジン・セキュリティユーティリティ | `npx vitest run tests/engine.test.ts` | 17 / 17 pass |
+| エンジン・セキュリティユーティリティ | `npx vitest run tests/engine.test.ts` | 18 / 18 pass |
 | HTTP API（テナント分離・トークン・CSRF・RBAC・SSRF等） | `npx vitest run tests/api.test.ts` | 15 / 15 pass |
-| サービスフロー（E2E相当・MCP・Backup） | `npx vitest run tests/flows.test.ts` | 21 / 21 pass |
+| サービスフロー（E2E相当・MCP・Backup） | `npx vitest run tests/flows.test.ts` | 24 / 24 pass |
 | 実PostgreSQL 16 フロー＋検索＋Backup/Restore | `TEST_DATABASE_URL=… TEST_DATABASE_URL2=… npx vitest run tests/postgres.test.ts` | 1 / 1 pass（URL未設定時はskip） |
 | ブラウザE2E（desktop / iPhone 13 / Pixel 7 / iPad gen7 プロファイル） | `npm run test:e2e` | 24 / 24 pass（6シナリオ×4端末） |
 | MCP stdio スモーク（公式SDKクライアント↔サーバープロセス、PostgreSQL） | `DATABASE_URL=… npx tsx scripts/mcp-smoke.ts` | OK（10ツール列挙・事実回答・confirmなし書込はプレビュー） |
@@ -79,3 +79,6 @@ PostgreSQL 16（ローカル）、`docs/perf-results-postgres.json`：
 
 ## 未検証
 - S3/R2 アダプタ（実バケット未接続）、Resend 実送信、Anthropic 実API呼び出し（キー未使用・ポリシー上未実施）、ClamAV 接続、Docker イメージのビルド（デーモン未起動）、本番デプロイ。
+
+## ドキュメントレビューで見つかった不具合の修正（回帰テスト追加）
+AIチェック後のステータス再計算（Readyのまま残る問題）／スキャン失敗時の受付拒否／確認コード10分失効／複数選択の「＝」「のいずれか」／外部AI通信エラー時のローカル判定フォールバック／ポータル用PWAマニフェスト（ホーム画面から自分の提出ページを開く）／本番で新規登録リンク非表示／`.env` 読込／tsx を dependencies へ／MCP起動は `npm --silent`（stdout汚染防止）／ビルダーの上限数・要レビュー既定表示／リンク有効日数の選択UI。

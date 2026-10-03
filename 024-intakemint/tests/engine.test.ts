@@ -187,3 +187,14 @@ describe('SSRF guard (URL ingestion)', () => {
     await expect(assertPublicUrl('https://public.example/', async () => ['93.184.216.34'])).resolves.toBeInstanceOf(URL)
   })
 })
+
+describe('condition operators on multiple-choice answers', () => {
+  it('eq means "includes" for arrays; in accepts arrays or comma strings', async () => {
+    const { evalCondition } = await import('../src/shared/logic')
+    expect(evalCondition({ questionId: 'p', op: 'eq', value: 'ec' }, { p: ['company', 'ec'] })).toBe(true)
+    expect(evalCondition({ questionId: 'p', op: 'neq', value: 'ec' }, { p: ['company', 'ec'] })).toBe(false)
+    expect(evalCondition({ questionId: 'p', op: 'in', value: ['ec', 'recruit'] }, { p: ['recruit'] })).toBe(true)
+    expect(evalCondition({ questionId: 'p', op: 'in', value: 'ec, recruit' }, { p: 'recruit' })).toBe(true)
+    expect(evalCondition({ questionId: 'p', op: 'in', value: ['ec'] }, { p: ['company'] })).toBe(false)
+  })
+})

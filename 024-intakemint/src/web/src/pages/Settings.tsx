@@ -116,7 +116,7 @@ function Tokens() {
       <p className="small">Claude Code・ChatGPT等のMCPクライアントから「この案件開始できる？」「不足項目は？」を確認したり、案件開始パックを生成できます。書き込み操作は confirm:true（人間の確認）が必要で、メール送信やクライアントへの連絡は行いません。</p>
       {!can(me, 'token.manage') ? <div className="alert alert-warn small">トークン管理には Owner / Admin 権限が必要です。</div> : <>
         <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} onClick={async () => { const name = prompt('トークン名（例：claude-code）'); if (!name) return; const r = await api('/api/org/tokens', { body: { name } }); setCreated(r.token); reload() }}>トークンを発行</button>
-        {created && <div className="alert alert-ok small">このトークンは一度だけ表示されます：<input className="input mono" readOnly value={created} onFocus={(e) => e.target.select()} aria-label="トークン" /><div className="mono tiny" style={{ marginTop: 6 }}>{`claude mcp add intakemint --env INTAKEMINT_API_TOKEN=${created.slice(0, 8)}… -- npm --prefix /path/to/024-intakemint run mcp`}</div></div>}
+        {created && <div className="alert alert-ok small">このトークンは一度だけ表示されます：<input className="input mono" readOnly value={created} onFocus={(e) => e.target.select()} aria-label="トークン" /><div className="mono tiny" style={{ marginTop: 6 }}>{`claude mcp add intakemint --env INTAKEMINT_API_TOKEN=${created.slice(0, 8)}… -- npm --silent --prefix /path/to/024-intakemint run mcp`}</div></div>}
         <table className="table"><thead><tr><th>名前</th><th>作成</th><th>最終利用</th><th></th></tr></thead><tbody>
           {data?.map((t) => <tr key={t.id}><td>{t.name}</td><td>{fmtDateTime(t.created_at)}</td><td>{fmtDateTime(t.last_used_at)}</td><td>{t.revoked_at ? <span className="badge b-draft">失効</span> : <button className="btn btn-sm btn-danger" onClick={async () => { await api(`/api/org/tokens/${t.id}`, { method: 'DELETE' }); toast('失効しました'); reload() }}>失効</button>}</td></tr>)}
         </tbody></table>
@@ -133,7 +133,7 @@ function Outbox() {
       {error && <div className="alert alert-warn small">{error}</div>}
       <p className="small muted">初期設定のメールプロバイダは「ローカル記録（outbox-local）」で、実際のメールは送信されません。実送信は運用者がプロバイダを設定・承認した場合のみです。</p>
       <div className="table-wrap"><table className="table"><thead><tr><th>宛先</th><th>件名</th><th>状態</th><th>試行</th><th>プロバイダ</th><th>作成</th></tr></thead><tbody>
-        {data?.map((m) => <tr key={m.id}><td>{m.to_address}</td><td>{m.subject}</td><td><span className={`badge b-${m.status === 'sent' ? 'accepted' : m.status === 'failed' ? 'missing' : 'draft'}`}>{m.status}</span>{m.last_error && <div className="tiny" style={{ color: 'var(--danger)' }}>{m.last_error}</div>}</td><td>{m.attempts}</td><td>{m.provider}</td><td className="small">{fmtDateTime(m.created_at)}</td></tr>)}
+        {data?.map((m) => <tr key={m.id}><td>{m.to_address}</td><td>{m.subject}{m.body && <details><summary className="tiny">本文（ローカル記録・未送信）</summary><pre className="md" style={{ maxHeight: 160 }}>{m.body}</pre></details>}</td><td><span className={`badge b-${m.status === 'sent' ? 'accepted' : m.status === 'failed' ? 'missing' : 'draft'}`}>{m.status}</span>{m.last_error && <div className="tiny" style={{ color: 'var(--danger)' }}>{m.last_error}</div>}</td><td>{m.attempts}</td><td>{m.provider}</td><td className="small">{fmtDateTime(m.created_at)}</td></tr>)}
       </tbody></table></div>
     </section>
   )

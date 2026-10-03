@@ -4,14 +4,20 @@ import { claim, complete, enqueue, fail } from './queue'
 import { runCaseAnalysis } from '../services/ai'
 import { deliverEmail, dispatchReminder, scanReminders } from '../services/reminders'
 import { audit } from '../services/audit'
-import { orgSettings } from '../services/cases'
+import { orgSettings, recompute } from '../services/cases'
 
 export async function runJobsOnce(ctx: Ctx, limit = 20): Promise<number> {
   const jobs = await claim(ctx.db, ctx.now(), limit)
   for (const job of jobs) {
     try {
       switch (job.type) {
-        case 'ai_case_analysis': await runCaseAnalysis(ctx, job.payload.orgId, job.payload.caseId, { type: 'system', orgId: job.payload.orgId }); break
+        case 'ai_case_analysis': {
+          const sys = { type: 'system' as const, orgId: job.payload.orgId }
+          await runCaseAnalysis(ctx, job.payload.orgId, job.payload.caseId, sys)
+          // new AI candidates can block Ready: re-evaluate status (case may have been deleted meanwhile)
+          await recompute(ctx, ctx.db, job.payload.orgId, job.payload.caseId, sys).catch(() => {})
+          break
+        }
         case 'send_reminder': await dispatchReminder(ctx, job.payload.orgId, job.payload.reminderId); break
         case 'send_email': await deliverEmail(ctx, job.payload.emailId, job.attempts, job.max_attempts); break
         case 'reminder_scan': await scanReminders(ctx); break

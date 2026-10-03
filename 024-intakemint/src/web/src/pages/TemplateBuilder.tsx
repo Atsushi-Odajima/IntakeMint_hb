@@ -206,7 +206,9 @@ function RuleEditor({ r, qOpts, targets, questions, disabled, onChange, onDelete
           <b className="small">もし</b>
           <select className="input" style={{ maxWidth: 260 }} disabled={disabled} value={leaf.questionId} onChange={(e) => onChange({ ...r, when: { ...leaf, questionId: e.target.value } })} aria-label="条件の質問">{qOpts}</select>
           <select className="input" style={{ maxWidth: 130 }} disabled={disabled} value={leaf.op} onChange={(e) => onChange({ ...r, when: { ...leaf, op: e.target.value as any } })} aria-label="比較">{OPS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
-          {!['answered', 'not_answered'].includes(leaf.op) && (q?.options?.length ? (
+          {leaf.op === 'in' ? (
+            <input className="input" style={{ maxWidth: 240 }} disabled={disabled} placeholder="値をカンマ区切り" value={Array.isArray(leaf.value) ? leaf.value.join(',') : String(leaf.value ?? '')} onChange={(e) => onChange({ ...r, when: { ...leaf, value: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) } })} aria-label="値（カンマ区切り）" />
+          ) : !['answered', 'not_answered'].includes(leaf.op) && (q?.options?.length ? (
             <select className="input" style={{ maxWidth: 200 }} disabled={disabled} value={String(leaf.value ?? '')} onChange={(e) => onChange({ ...r, when: { ...leaf, value: e.target.value } })} aria-label="値">{q.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select>
           ) : q?.type === 'yes_no' ? (
             <select className="input" style={{ maxWidth: 140 }} disabled={disabled} value={String(leaf.value ?? '')} onChange={(e) => onChange({ ...r, when: { ...leaf, value: e.target.value } })} aria-label="値"><option value="yes">はい</option><option value="no">いいえ</option></select>
@@ -235,7 +237,7 @@ function ItemEditor({ it, qOpts, questions, disabled, onChange, onDelete }: { it
         <span className="badge b-draft">{it.type === 'file' ? 'ファイル' : '質問'}</span>
         <span className="mono tiny muted">{it.id}</span>
         <label className="check" style={{ padding: 0 }}><input type="checkbox" checked={it.required} disabled={disabled} onChange={(e) => set({ required: e.target.checked })} />必須</label>
-        <label className="check" style={{ padding: 0 }}><input type="checkbox" checked={!!it.requireReview} disabled={disabled} onChange={(e) => set({ requireReview: e.target.checked })} />要レビュー</label>
+        <label className="check" style={{ padding: 0 }}><input type="checkbox" checked={it.requireReview ?? it.type === 'file'} disabled={disabled} onChange={(e) => set({ requireReview: e.target.checked })} />要レビュー</label>
         {!disabled && <button className="btn btn-sm btn-ghost" onClick={onDelete}>削除</button>}
       </div>
       {it.type === 'question' ? (
@@ -245,6 +247,7 @@ function ItemEditor({ it, qOpts, questions, disabled, onChange, onDelete }: { it
       ) : (
         <div className="grid grid-3" style={{ marginTop: 8 }}>
           <label className="field"><span className="small">必要数（最小）</span><input className="input" type="number" min={1} disabled={disabled} value={it.minCount ?? 1} onChange={(e) => set({ minCount: Math.max(1, Number(e.target.value)) })} /></label>
+          <label className="field"><span className="small">上限数（任意）</span><input className="input" type="number" min={1} disabled={disabled} value={it.maxCount ?? ''} onChange={(e) => set({ maxCount: e.target.value === '' ? undefined : Math.max(1, Number(e.target.value)) })} /></label>
           <label className="field"><span className="small">受付形式（拡張子, 区切り）</span><input className="input" disabled={disabled} value={(it.acceptedFormats ?? []).join(',')} onChange={(e) => set({ acceptedFormats: e.target.value.split(',').map((x) => x.trim().toLowerCase().replace(/^\./, '')).filter(Boolean) })} /></label>
           <label className="field"><span className="small">最大サイズ(MB)</span><input className="input" type="number" min={1} disabled={disabled} value={it.maxSizeMB ?? 20} onChange={(e) => set({ maxSizeMB: Number(e.target.value) })} /></label>
           <label className="field"><span className="small">分類</span><select className="input" disabled={disabled} value={it.category ?? 'other'} onChange={(e) => set({ category: e.target.value as any })}>{FILE_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></label>

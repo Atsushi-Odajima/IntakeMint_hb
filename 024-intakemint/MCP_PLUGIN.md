@@ -22,7 +22,7 @@
 
 ## Claude Code への登録例
 ```
-claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxx --env DATABASE_URL=postgres://... -- npm --prefix /path/to/024-intakemint run mcp
+claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxx --env DATABASE_URL=postgres://... -- npm --silent --prefix /path/to/024-intakemint run mcp
 ```
 MCPサーバーはDBに直接接続するため、サーバーと同じ `DATABASE_URL`（または `PGLITE_DIR`）を指定する。PGliteは単一プロセス専用のため、MCPを併用する場合は PostgreSQL を使う。
 

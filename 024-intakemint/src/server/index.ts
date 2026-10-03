@@ -7,6 +7,9 @@ import { startWorker } from './jobs/worker'
 import { seedSample } from './seed'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
+// Load ./.env when present (real environment variables take precedence)
+import fs from 'node:fs'
+if (fs.existsSync('.env')) process.loadEnvFile('.env')
 const ctx = await createCtx()
 if (process.env.SEED_SAMPLE === 'true') {
   const r = await seedSample(ctx)

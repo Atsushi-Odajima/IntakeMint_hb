@@ -57,13 +57,15 @@ export async function resolveToken(ctx: Ctx, token: string): Promise<ClientSessi
 /** Optional email verification: a 6-digit code (stored hashed) — sent through the email outbox. */
 export async function startEmailVerification(ctx: Ctx, s: ClientSession): Promise<string> {
   const code = String(crypto.randomInt(100000, 1000000))
-  await ctx.db.query('UPDATE case_access_tokens SET verification_code_hash=$2 WHERE id=$1', [s.linkId, sha256(code + s.linkId)])
+  const exp = ctx.now().getTime() + 10 * 60_000
+  await ctx.db.query('UPDATE case_access_tokens SET verification_code_hash=$2 WHERE id=$1', [s.linkId, `${sha256(code + s.linkId)}|${exp}`])
   return code
 }
 
 export async function verifyEmailCode(ctx: Ctx, s: ClientSession, code: string): Promise<boolean> {
   const r = await ctx.db.one('SELECT verification_code_hash FROM case_access_tokens WHERE id=$1', [s.linkId])
-  if (!r?.verification_code_hash || r.verification_code_hash !== sha256(code + s.linkId)) return false
+  const [hash, exp] = String(r?.verification_code_hash ?? '').split('|')
+  if (!hash || !exp || Number(exp) < ctx.now().getTime() || hash !== sha256(code + s.linkId)) return false
   await ctx.db.query('UPDATE case_access_tokens SET email_verified_at=$2, verification_code_hash=NULL WHERE id=$1', [s.linkId, ctx.now()])
   return true
 }

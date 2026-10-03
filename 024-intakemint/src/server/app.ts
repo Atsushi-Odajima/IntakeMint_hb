@@ -103,7 +103,7 @@ export async function buildApp(ctx: Ctx, opts: { webDist?: string; logger?: bool
   const uuid = z.string().uuid()
 
   // ---------- health ----------
-  app.get('/api/health', async () => ({ ok: true, version: ctx.config.appVersion, db: ctx.db.kind }))
+  app.get('/api/health', async () => ({ ok: true, version: ctx.config.appVersion, db: ctx.db.kind, signup: ctx.config.env !== 'production' || process.env.ALLOW_SIGNUP === 'true' }))
 
   // ---------- auth ----------
   const cookieOpts = { httpOnly: true, sameSite: 'lax' as const, secure: ctx.config.env === 'production', path: '/' }
@@ -189,7 +189,9 @@ export async function buildApp(ctx: Ctx, opts: { webDist?: string; logger?: bool
   })
   app.get('/api/org/outbox', async (req) => {
     const a = await internal(req); requirePerm(a, 'reminder.send')
-    return (await ctx.db.query('SELECT id, case_id, to_address, subject, status, attempts, last_error, provider, created_at, sent_at FROM email_outbox WHERE org_id=$1 ORDER BY created_at DESC LIMIT 100', [a.orgId])).rows
+    // Body is shown only for messages recorded by the local outbox provider (nothing was actually sent),
+    // so staff can relay e.g. a verification code by phone. Real-provider messages never expose bodies here.
+    return (await ctx.db.query(`SELECT id, case_id, to_address, subject, CASE WHEN provider='outbox-local' OR provider IS NULL THEN body END AS body, status, attempts, last_error, provider, created_at, sent_at FROM email_outbox WHERE org_id=$1 ORDER BY created_at DESC LIMIT 100`, [a.orgId])).rows
   })
   app.get('/api/org/tokens', async (req) => {
     const a = await internal(req); requirePerm(a, 'token.manage')
@@ -369,6 +371,17 @@ export async function buildApp(ctx: Ctx, opts: { webDist?: string; logger?: bool
     const branding = { senderName: settings.branding.senderName, color: settings.branding.color, logoDataUrl: settings.branding.logoDataUrl, intro: settings.branding.intro, completionMessage: settings.branding.completionMessage }
     if (c.session.needsVerification) return { needsVerification: true, branding }
     return portalView(c.orgId, c.caseId!, branding)
+  })
+  app.get('/api/portal/:token/manifest.webmanifest', portalLimit, async (req, reply) => {
+    const c = await client(req, true)
+    const s = await cases.orgSettings(ctx.db, c.orgId)
+    const token = (req.params as any).token as string
+    reply.header('content-type', 'application/manifest+json').header('cache-control', 'no-store')
+    return {
+      name: `${s.branding.senderName} — 提出ページ`, short_name: '提出ページ', id: `/p/${token}`, start_url: `/p/${token}`, scope: `/p/${token}`,
+      display: 'standalone', background_color: '#F8F9F7', theme_color: '#0F2D2A', lang: 'ja',
+      icons: [{ src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }, { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }],
+    }
   })
   app.post('/api/portal/:token/answers', portalLimit, async (req) => {
     const c = await client(req)

@@ -8,7 +8,7 @@
 | CSRF | 状態変更リクエストは `x-csrf-token` ヘッダ必須（セッション固有）。Bearer APIトークンは対象外 | CSRFなし→403 |
 | Client token | 256bit乱数、sha256保存、期限・失効・再発行、案件1件に束縛、メール確認（任意） | #2, #21 |
 | Signed URL | HMAC-SHA256・期限・disposition署名。sandbox CSP・nosniff・no-store | #11 |
-| Upload validation | 拡張子許可リスト×マジックバイト×サイズ、ファイル名サニタイズ、原本上書き不可、EICAR検出 | #10 |
+| Upload validation | 拡張子許可リスト×マジックバイト×サイズ、ファイル名サニタイズ、原本上書き不可、EICAR検出、スキャン失敗時は受付拒否 | #10 |
 | Rate limit | 全体 600/分/IP、ログイン 10/分、ポータル 120/分、確認コード 5〜10/10分 | — |
 | Schema validation | zod（全APIボディ・クエリ・テンプレート定義） | lint/検証テスト |
 | SQL injection | すべて `$n` パラメータ。LIKE はワイルドカードをエスケープ | `%` 検索テスト |

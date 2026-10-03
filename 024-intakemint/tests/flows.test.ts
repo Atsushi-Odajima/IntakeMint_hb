@@ -439,3 +439,38 @@ describe('recompute is idempotent', () => {
     expect(b.row.status).toBe(a.row.status); expect(b.result.progress).toEqual(a.result.progress)
   })
 })
+
+describe('fixes from documentation review', () => {
+  it('AI job re-evaluates status (new candidate revokes nothing silently / blocks Ready)', async () => {
+    const s = await setup()
+    await completeAll(s)
+    expect((await signoff(s.ctx, s.A.owner, s.caseId)).row.status).toBe('ready')
+    // a vague non-required answer change does not revoke ready by itself, but the queued AI job adds a candidate and recomputes
+    await saveAnswers(s.ctx, s.client, s.caseId, { requests: 'おまかせ' })
+    s.clock.advance(5000)
+    await runJobsOnce(s.ctx)
+    const st = await loadState(s.ctx.db, s.A.orgId, s.caseId)
+    expect(st.unresolvedAi).toBeGreaterThan(0)
+    expect(st.row.status).not.toBe('ready')
+  })
+  it('scanner error blocks the upload', async () => {
+    const s = await setup()
+    s.ctx.scanner = { name: 'broken', scan: async () => 'error' }
+    await expect(uploadFile(s.ctx, s.client, s.caseId, 'logo', 'logo.pdf', makePdf())).rejects.toThrow(/セキュリティチェック/)
+    expect((await s.ctx.db.query('SELECT 1 FROM files WHERE case_id=$1', [s.caseId])).rowCount).toBe(0)
+  })
+  it('email verification code expires after 10 minutes', async () => {
+    const s = await setup()
+    const { startEmailVerification, verifyEmailCode, resolveToken } = await import('../src/server/services/access')
+    const l = await issueLink(s.ctx, s.A.owner, s.caseId, { requireEmailVerification: true })
+    const sess = await resolveToken(s.ctx, l.token)
+    expect(sess.needsVerification).toBe(true)
+    const code = await startEmailVerification(s.ctx, sess)
+    s.clock.advance(11 * 60_000)
+    expect(await verifyEmailCode(s.ctx, sess, code)).toBe(false)
+    const code2 = await startEmailVerification(s.ctx, sess)
+    expect(await verifyEmailCode(s.ctx, sess, '000000')).toBe(false)
+    expect(await verifyEmailCode(s.ctx, sess, code2)).toBe(true)
+    expect((await resolveToken(s.ctx, l.token)).needsVerification).toBe(false)
+  })
+})

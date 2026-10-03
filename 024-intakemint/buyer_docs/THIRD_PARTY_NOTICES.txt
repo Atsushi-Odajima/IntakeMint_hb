@@ -1,0 +1,97 @@
+THIRD_PARTY_NOTICES（第三者ソフトウェアのライセンス表示）
+========================================
+
+IntakeMint は、以下のオープンソースソフトウェアを利用しています。
+各パッケージの著作権表示とライセンス全文は、node_modules/<パッケージ名>/ 内の
+LICENSE（または LICENSE.md 等）ファイルに含まれています。
+本ファイルのライセンス情報は、インストール済みの node_modules/<パッケージ名>/package.json の
+"license" 欄から作成しました（確認日 2026-10-03、バージョンはインストール済みのもの）。
+再配布・販売の際は、各ライセンスの条件（著作権表示・ライセンス文の同梱など）に従ってください。
+
+
+■ 実行時の依存パッケージ（package.json の dependencies）
+
+・@electric-sql/pglite 0.5.8 …… Apache-2.0（PostgreSQL License とのデュアルライセンス。
+                                  内包する Postgres ソースへの変更は PostgreSQL License）
+                                  https://pglite.dev
+・@fastify/cookie 11.1.2 ………… MIT   https://github.com/fastify/fastify-cookie
+・@fastify/helmet 13.1.1 ………… MIT   https://github.com/fastify/fastify-helmet
+・@fastify/multipart 10.1.2 …… MIT   https://github.com/fastify/fastify-multipart
+・@fastify/rate-limit 11.2.0 … MIT   https://github.com/fastify/fastify-rate-limit
+・@fastify/static 10.1.5 ……… MIT   https://github.com/fastify/fastify-static
+・@modelcontextprotocol/sdk 1.32.0 … MIT   https://modelcontextprotocol.io
+・fastify 5.12.5 ………………… MIT   https://fastify.dev/
+・fflate 0.8.3 ………………… MIT   https://101arrowz.github.io/fflate
+・pg 8.23.1 ……………………… MIT   https://github.com/brianc/node-postgres
+・react 19.3.0 ………………… MIT   https://react.dev/
+・react-dom 19.3.0 …………… MIT   https://react.dev/
+・react-router-dom 7.18.4 …… MIT   https://github.com/remix-run/react-router
+・zod 4.6.5 ……………………… MIT   https://zod.dev
+
+※ ブラウザ向けにビルドされた画面（dist/web）には、主に react / react-dom / react-router-dom が含まれます。
+
+
+■ 開発・ビルド・テスト用の依存パッケージ（package.json の devDependencies）
+
+・@playwright/test 1.63.0 ………… Apache-2.0   https://playwright.dev
+・@types/node 26.6.4 ……………… MIT   https://github.com/DefinitelyTyped/DefinitelyTyped
+・@types/pg 8.23.1 ………………… MIT   https://github.com/DefinitelyTyped/DefinitelyTyped
+・@types/react 19.3.0 …………… MIT   https://github.com/DefinitelyTyped/DefinitelyTyped
+・@types/react-dom 19.3.0 ……… MIT   https://github.com/DefinitelyTyped/DefinitelyTyped
+・@vitejs/plugin-react 6.1.1 … MIT   https://github.com/vitejs/vite-plugin-react
+・tsx 4.23.15 ……………………… MIT   https://tsx.hirok.io
+                                  （npm start / npm run mcp / npm run restore の実行にも使用）
+・typescript 7.0.2 ……………… Apache-2.0   https://www.typescriptlang.org/
+・vite 8.3.2 ……………………… MIT   https://vite.dev
+・vitest 5.0.3 ………………… MIT   https://vitest.dev
+
+
+■ 間接的な依存パッケージ（推移的依存）
+
+依存パッケージがさらに利用しているパッケージの完全な一覧（名前・バージョン・ライセンス）は
+package-lock.json に記録されています。package-lock.json 上の集計は次のとおりです。
+
+・全体：299パッケージ
+  MIT 235 / Apache-2.0 27 / ISC 12 / MPL-2.0 12 / BSD-3-Clause 7 / BlueOak-1.0.0 5 / BSD-2-Clause 1
+・うち実行時（dev 以外）：180パッケージ
+  MIT 156 / ISC 11 / BSD-3-Clause 6 / BlueOak-1.0.0 5 / Apache-2.0 1 / BSD-2-Clause 1
+
+実行時のうち MIT 以外のもの
+・Apache-2.0 …… @electric-sql/pglite
+・BSD-3-Clause … fast-uri, light-my-request, qs, secure-json-parse
+・ISC …………… fastq, inherits, isexe, once, pg-int8, semver, setprototypeof, split2, which, wrappy,
+                  zod-to-json-schema
+・BlueOak-1.0.0 … glob, lru-cache, minimatch, minipass, path-scurry
+・BSD-2-Clause … json-schema-typed
+
+開発用のみ
+・MPL-2.0 ……… lightningcss（および各OS向けバイナリ。vite が CSS 処理に使うビルド用ツールで、
+                  完成した画面には含まれません）
+
+
+■ 同梱していない外部ソフトウェア・サービス
+
+・ClamAV（GPLv2）…… 同梱していません。使う場合は別サービスとして起動し、TCPで接続します
+                        （IntakeMint のコードとはリンクしません）
+・PostgreSQL …………… 本番用データベースは別途ご用意ください
+・Playwright 用ブラウザ（Chromium）… テスト用。製品には含まれません
+・外部AI（Anthropic）・メール（Resend）… APIで接続するサービスで、ソフトウェアは同梱していません。
+                        利用する場合は各社の利用規約に従ってください
+
+
+■ フォント
+
+・フォントファイルは同梱していません。
+・画面は、端末にインストールされているフォントを使う「システムフォントスタック」で表示します
+  （"Inter", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI",
+    "Meiryo", system-ui などのうち、端末にあるものが使われます）。
+・Web フォントの読み込み（Google Fonts 等）も行っていません。
+
+
+■ アイコン・ロゴ
+
+・アイコンとロゴ（src/web/public/icon.svg、logo-mark.svg、icon-maskable.svg）は、
+  本製品のために作成したオリジナルの SVG です。
+・src/web/public/icons/ の PNG アイコンは、これらの SVG から scripts/icons.ts で生成したものです。
+・画面内の小さなアイコンも、コード内に直接書かれたオリジナルの SVG です。
+・ただし「IntakeMint」の名称・ロゴについて、商標の確認は行っていません（「注意事項.txt」参照）。

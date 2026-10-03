@@ -151,7 +151,9 @@ export class AnthropicProvider implements AiProvider {
   async analyzeCase(input: CaseAnalysisInput): Promise<CaseAnalysisOutput> {
     const qs = input.def.questions.map((q) => ({ id: q.id, label: q.label, answer: input.answers[q.id] ?? null }))
     const system = 'You review client intake answers. Output ONLY JSON {"followUps":[{"questionId","text","reason"}],"contradictions":[{"text","questionIds":[]}],"ambiguities":[{"questionId","text","reason"}]}. Never invent requirements; only reference given question ids; write in Japanese.'
-    const raw = await this.call(system, JSON.stringify({ questions: qs, files: input.fileTexts.map((f) => ({ id: f.fileId, text: f.text.slice(0, 4000) })) }))
+    let raw: string
+    try { raw = await this.call(system, JSON.stringify({ questions: qs, files: input.fileTexts.map((f) => ({ id: f.fileId, text: f.text.slice(0, 4000) })) })) }
+    catch { return this.fallback.analyzeCase(input) } // network / API error => deterministic local check
     const ids = new Set(input.def.questions.map((q) => q.id))
     try {
       const j = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1))

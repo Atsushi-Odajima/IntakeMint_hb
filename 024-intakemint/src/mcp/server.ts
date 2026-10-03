@@ -32,6 +32,7 @@ export function createMcpServer(ctx: Ctx, token: string) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
+  if ((await import('node:fs')).existsSync('.env')) process.loadEnvFile('.env')
   const token = process.env.INTAKEMINT_API_TOKEN
   if (!token) { console.error('INTAKEMINT_API_TOKEN is required'); process.exit(1) }
   const ctx = await createCtx()

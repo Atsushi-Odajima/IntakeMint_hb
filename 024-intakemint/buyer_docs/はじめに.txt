@@ -63,8 +63,8 @@ Web制作、デザイン、動画、SNS運用代行、コンサル、士業、�
      例：SIGNING_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))") SEED_SAMPLE=true npm start
    ※ DATABASE_URL を指定しない場合は PGlite が使われます。PGLITE_DIR を指定しないと
      データはメモリ上だけに置かれ、再起動で消えます。残したい場合は PGLITE_DIR=./data/pg を追加してください。
-   ※ .env ファイルは自動では読み込まれません。環境変数はシェルやホスティング側で設定してください
-     （設定項目の一覧は .env.example を参照）。
+   ※ 024-intakemint フォルダに .env ファイルがあれば起動時に読み込まれます（環境変数が優先）。
+     設定項目の一覧は .env.example を参照してください。
 
 4) ブラウザで http://localhost:8787/ を開き、サンプルアカウントでログイン
    メールアドレス：owner@sample-creative.example
@@ -79,7 +79,7 @@ Web制作、デザイン、動画、SNS運用代行、コンサル、士業、�
 
 ■ 本番で最初のアカウントを作るには
 
-・本番モードでは「新規登録」は既定で無効です（画面にリンクは出ますが、登録はエラーになります）。
+・本番モードでは「新規登録」は既定で無効です（ログイン画面にもリンクは表示されません）。
 ・最初の Owner を作るときだけ ALLOW_SIGNUP=true で起動して登録し、登録後は外して再起動してください。
 ・2人目以降は「設定 → メンバー」から追加します（初期パスワードは10文字以上）。
 

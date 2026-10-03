@@ -53,6 +53,11 @@ test('E2E-3 / #6 UI: choosing EC shows EC questions; recruiting stays hidden; pr
   const { url } = await newCaseLink(browser, baseURL!, 'Branch')
   await page.goto(url)
   await expect(page.getByText(/必要な情報 7件中 0件/)).toBeVisible()
+  // client home-screen install reopens this portal link, not the staff app
+  const href = await page.locator('link[rel="manifest"]').getAttribute('href')
+  expect(href).toBe(`/api/portal/${url.split('/p/')[1]}/manifest.webmanifest`)
+  const pm = await (await page.request.get(href!)).json()
+  expect(pm.start_url).toBe(url)
   await expect(page.getByText('掲載する商品数')).toHaveCount(0)
   await page.getByRole('checkbox', { name: 'ネット販売（EC）' }).click()
   await expect(page.getByText('掲載する商品数')).toBeVisible()

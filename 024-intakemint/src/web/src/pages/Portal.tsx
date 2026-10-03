@@ -57,6 +57,14 @@ export default function Portal() {
     } catch (e) { setFatal(e instanceof ApiError ? e.message : 'ページを読み込めませんでした') }
   }, [token])
   useEffect(() => { load() }, [load])
+  useEffect(() => {
+    // Home-screen install from the portal must reopen this client's own link, not the staff app.
+    const link = document.querySelector<HTMLLinkElement>('link[rel="manifest"]')
+    if (!link) return
+    const prev = link.href
+    link.href = `/api/portal/${token}/manifest.webmanifest`
+    return () => { link.href = prev }
+  }, [token])
 
   const def: TemplateDefinition | null = view?.definition ?? null
   const logic = useMemo(() => (def ? evaluateLogic(def, answers) : null), [def, answers])

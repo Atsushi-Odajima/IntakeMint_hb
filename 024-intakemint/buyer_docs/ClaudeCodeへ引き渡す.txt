@@ -44,12 +44,12 @@ Developer Handoff（パック後半の「○○ Handoff」）に含まれるも�
 ・不要になったら一覧の「失効」で無効化してください。
 
 ▼ 2. Claude Code に登録する
-  claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxxxxxxx -- npm --prefix /path/to/024-intakemint run mcp
+  claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxxxxxxx -- npm --silent --prefix /path/to/024-intakemint run mcp
 
 ・/path/to/024-intakemint は、IntakeMint を置いたフォルダの絶対パスに置き換えてください。
 ・MCP サーバーは、Webサーバーとは別のプロセスとして、自分でデータベースに接続します。
   そのため DATABASE_URL など、サーバーと同じ環境変数を MCP 側にも渡してください。
-    例：claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxx --env DATABASE_URL=postgres://... -- npm --prefix /path/to/024-intakemint run mcp
+    例：claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxx --env DATABASE_URL=postgres://... -- npm --silent --prefix /path/to/024-intakemint run mcp
 ・組み込みの PGlite は1つのプロセスからしか使えません。Webサーバーを動かしたまま MCP も使う場合は、
   PostgreSQL（DATABASE_URL）で運用してください。PGlite のメモリ上データ（PGLITE_DIR 未指定）には
   MCP から接続できません。
