@@ -1,0 +1,18 @@
+IntakeMint #024 — NEXT STEPS（人間の判断・作業が必要なもの）
+
+[販売前に必須]
+1. 物理実機確認：iPhone（Safari・ホーム画面追加・カメラ/写真アップロード）、Android（Chrome インストール）、iPad、PC主要ブラウザ。RELEASE_CHECKLIST.md の手順。
+2. 名称/商標：「IntakeMint」の商標（J-PlatPat / USPTO）、ドメイン、App Store、類似SaaS を正式確認。問題があれば候補名を提示（勝手に変更しない）。
+3. 料金の再確認：SOURCE_NOTES.md で secondary/未取得の単価（OpenAI、AWS、Neon、Resend/Postmark、Fly/Render 等）を公式ページで確認し OPERATING_COSTS.md を更新。
+4. 本番デプロイ（有料契約を伴う）：ホスティング・PostgreSQL・R2 の契約、ドメイン、TLS、SIGNING_SECRET 等の設定 → 承認後に実施。
+5. 実メール送信（Resend/SES）の契約・ドメイン認証（SPF/DKIM/DMARC）→ EMAIL_ALLOW_REAL_SEND=true は承認後。
+6. 外部AI（Anthropic）利用時：顧客との合意（DPA）・プライバシーポリシー・利用規約の整備 → AI_ALLOW_EXTERNAL=true は承認後。実データでの品質評価。
+7. 利用規約・プライバシーポリシー・特商法表記（販売者側で作成）。
+
+[技術的な次段階（初版完成後・新機能扱い）]
+- S3/R2 アダプタの実バケット検証、ClamAV（clamd）接続、OCR/Vision プロバイダ接続。
+- MCP の Streamable HTTP トランスポート＋OAuth（リモートMCP / ChatGPT Apps）。
+- リマインドスキャンの対象絞り込み（期限±N日のみ）、レート制限の共有ストア化（複数台）。
+- パスワードリセット（メール）、2FA。
+- 印刷用アウトライン化ワードマーク。
+- Pro候補（White-label、独自ドメイン、Connector実装、SSO/SCIM、API/Webhook 等）は初版完成後に判断。

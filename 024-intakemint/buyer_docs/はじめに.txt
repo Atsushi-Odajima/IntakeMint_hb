@@ -1,0 +1,118 @@
+IntakeMint（インテークミント）はじめに
+AIヒアリング・情報回収・提出物整理ツール
+========================================
+
+■ IntakeMintとは（ひとことで）
+
+仕事を始めるために必要な情報・ファイルを、AIが質問・不足確認・整理して、全部揃うまで管理するツールです。
+
+「ロゴデータがまだ来ていない」「商品画像が5枚必要なのに3枚しかない」「目的の回答が曖昧」
+といった“案件開始前のモヤモヤ”を、1つの画面で見える化し、揃ったら「案件開始パック」として
+制作担当や Claude Code にそのまま渡せる形に整理します。
+
+
+■ 主な機能
+
+・業種別サンプル付きのフォーム（ヒアリングテンプレート）作成
+  - Web制作、EC立ち上げ、SNS運用代行、動画制作、採用・人事、コンサルティング、
+    税務・会計資料、不動産、汎用ヒアリングの9種類
+・条件分岐（回答に応じて質問や必要項目を「表示 / 非表示 / 必須 / 任意」に切り替え）
+・必要ファイルの回収（必要枚数、受付形式、最大サイズ、中身と拡張子の一致チェック）
+・クライアントはアカウント不要。期限付きの共有リンクから回答・アップロード
+・進捗表示（例：必要項目7件中5件 提出済み＝71%）と「次に必要なもの」の自動表示
+・AIによる確認候補（曖昧な回答・矛盾・追加質問の候補）。採用するかは担当者が決めます
+・担当者によるレビュー（承認 / 差戻 / 対象外）と、差し戻し理由のクライアント表示
+・リマインド（期限前・当日・期限超過）。初期設定は「下書き → 担当者が承認して送信」
+・Ready判定（開始してよいかを決まったルールで判定）と内部サインオフ
+・案件開始パック（出典付き Markdown / TXT / JSON、印刷・PDF保存）
+・Claude Code など MCP クライアントからの状況確認・パック生成
+・スマホ対応（PWA）、組織データのバックアップ（ZIP）と復元、CSV出力、監査ログ
+
+
+■ こんな方におすすめ
+
+Web制作、デザイン、動画、SNS運用代行、コンサル、士業、採用/人事、不動産、EC支援、
+フリーランス、Agency、BPO、小規模企業 など、
+「仕事を始める前に、お客様から情報や素材を集める」ことが多いすべての方。
+
+
+■ 動作環境
+
+・Node.js 22.12 以上（package.json の engines: ">=22.12"）
+・開発・デモ：データベースは組み込みの PGlite（追加インストール不要・単一プロセス）
+・本番：PostgreSQL（環境変数 DATABASE_URL で指定）を推奨
+・ブラウザ：最新の Chrome / Edge / Safari / Firefox（スマホは iPhone Safari / Android Chrome）
+・ファイル保存先：既定はサーバーのローカルディスク（STORAGE_DIR、既定 ./data/objects）
+
+
+■ クイックスタート（お試し）
+
+1) 依存パッケージをインストール
+   npm install
+
+2) 画面をビルド
+   npm run build
+
+3) サンプルデータ付きで起動
+   SEED_SAMPLE=true npm start
+
+   ※ 注意：npm start は「本番モード（NODE_ENV=production）」で起動するため、
+     32文字以上の SIGNING_SECRET が必須です。未設定だと起動時にエラーで止まります。
+     お試しでは次のように一緒に指定してください。
+       SIGNING_SECRET=（32文字以上のランダムな文字列） SEED_SAMPLE=true npm start
+     例：SIGNING_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))") SEED_SAMPLE=true npm start
+   ※ DATABASE_URL を指定しない場合は PGlite が使われます。PGLITE_DIR を指定しないと
+     データはメモリ上だけに置かれ、再起動で消えます。残したい場合は PGLITE_DIR=./data/pg を追加してください。
+   ※ .env ファイルは自動では読み込まれません。環境変数はシェルやホスティング側で設定してください
+     （設定項目の一覧は .env.example を参照）。
+
+4) ブラウザで http://localhost:8787/ を開き、サンプルアカウントでログイン
+   メールアドレス：owner@sample-creative.example
+   パスワード　　：sample-demo-password
+
+   ※ これは架空の「Sample Creative Studio（架空）」用のサンプル専用アカウントです。
+     本番環境では SEED_SAMPLE を絶対に有効にしないでください。
+     サンプルのパスワードは公開情報なので、そのまま使い続けないでください（SEED_PASSWORD で変更可能）。
+   ※ 本番モードではログイン用 Cookie が Secure 属性付きになります。localhost 以外
+     （スマホから社内LANのIPで開く等）で試す場合は HTTPS で公開してください。
+
+
+■ 本番で最初のアカウントを作るには
+
+・本番モードでは「新規登録」は既定で無効です（画面にリンクは出ますが、登録はエラーになります）。
+・最初の Owner を作るときだけ ALLOW_SIGNUP=true で起動して登録し、登録後は外して再起動してください。
+・2人目以降は「設定 → メンバー」から追加します（初期パスワードは10文字以上）。
+
+
+■ 主な環境変数（抜粋）
+
+・SIGNING_SECRET ……… 本番必須（32文字以上）
+・PUBLIC_BASE_URL …… 共有リンクのURLに使われます（例：https://intake.example.com）
+・DATABASE_URL ………… PostgreSQL 接続先（未設定なら PGlite）
+・PGLITE_DIR …………… PGlite のデータ保存先
+・STORAGE_DIR / S3_* … ファイル保存先
+・CLIENT_LINK_DAYS …… 共有リンクの既定有効日数（既定14）
+・MAX_UPLOAD_MB ……… 1ファイルの上限（既定50）
+・AI_PROVIDER / AI_API_KEY / AI_ALLOW_EXTERNAL … AI設定（「AIとPrivacy.txt」参照）
+・EMAIL_PROVIDER / EMAIL_API_KEY / EMAIL_ALLOW_REAL_SEND … メール設定（「Reminder.txt」参照）
+・SCANNER / CLAMAV_HOST … ウイルスチェック設定（「必要ファイルを集める.txt」参照）
+
+
+■ ドキュメント一覧
+
+ 1. はじめに.txt ……………… この文書
+ 2. 最初のIntakeを作る.txt …… フォーム作成から共有リンク送付まで
+ 3. 質問と条件分岐.txt ……… 質問の種類と条件分岐ルール
+ 4. 必要ファイルを集める.txt … ファイル項目の設定とレビュー
+ 5. 回答不足を確認する.txt …… 進捗の見方、ステータス、AI確認候補
+ 6. Clientへ送る.txt ………… 共有リンクの仕組みと注意点
+ 7. Reminder.txt ……………… リマインドの仕組み
+ 8. Ready判定.txt …………… 「開始してよいか」の判定
+ 9. 案件開始パック.txt ……… パックの内容と出力形式
+10. ClaudeCodeへ引き渡す.txt … Handoff と MCP 連携
+11. スマホ-PWA.txt …………… スマホでの利用とホーム画面追加
+12. AIとPrivacy.txt ………… AIの使い方とプライバシー
+13. Backup-Export.txt ………… バックアップ・復元・CSV
+14. 運用コスト.txt …………… 月額コストの目安
+15. 注意事項.txt ……………… 保証範囲・制限事項
+16. THIRD_PARTY_NOTICES.txt … 利用しているOSSのライセンス

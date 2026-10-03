@@ -33,6 +33,7 @@ function wrap(kind: Db['kind'], q: RawQuery, txImpl: Db['tx'], close: () => Prom
 export async function createPgliteDb(dataDir?: string): Promise<Db> {
   const { PGlite } = await import('@electric-sql/pglite')
   const { pg_trgm } = await import('@electric-sql/pglite/contrib/pg_trgm')
+  if (dataDir) (await import('node:fs')).mkdirSync(dataDir, { recursive: true })
   const pg = await PGlite.create({ dataDir, extensions: { pg_trgm } })
   const self: Db = wrap('pglite', (s, p) => pg.query(s, p as any[]) as any, async (fn) => {
     return pg.transaction(async (t) => {

@@ -1,0 +1,88 @@
+ClaudeCodeへ引き渡す
+========================================
+
+IntakeMint で集めた情報は、2つの方法で Claude Code に渡せます。
+  A. 案件開始パック（Handoff）の Markdown をコピーして貼り付ける（いちばん簡単）
+  B. MCP で接続し、Claude Code から直接「この案件開始できる？」と聞く
+
+
+■ A. Handoff を貼り付ける
+
+1) 案件詳細「案件開始パック」タブを開く
+2) プロファイルで「Web Development（Claude Code向け）」を選ぶ（Web制作の場合）
+3) 「パックを生成」→「コピー」
+4) Claude Code に貼り付けて、例えば次のように依頼します
+   「この案件開始パックをもとに、サイトの実装計画を立ててください。
+     Open Questions に残っている点は、実装前に私に確認してください。」
+
+Developer Handoff（パック後半の「○○ Handoff」）に含まれるもの
+・Overview ………………… 案件名・目的・対象
+・Pages / Features（候補）… 選ばれた機能から導いたページ候補
+    例：会社案内 → 会社概要ページ、お問い合わせ獲得 → お問い合わせフォーム、
+        ネット販売（EC）→ 商品一覧・商品詳細・カート/決済
+・Brand Assets ……………… 提出ファイル
+・Content …………………… 要件・要望（回答そのもの）
+・References / Constraints
+・Open Questions …………… 未確定事項
+・File Paths ………………… files/<項目ID>/<ファイルID先頭8文字>_<元のファイル名> の形式の一覧
+・Acceptance Criteria（候補）… 「承認済みファイル5件以上が成果物に反映されている」等の確認観点
+
+大事なこと：ページ構成や受入基準は「候補」です。クライアントの回答から機械的に作ったもので、
+技術仕様として確定したものではありません。Claude Code にも「候補である」ことを伝えたうえで使ってください。
+各行の [q:質問ID] [file:ファイルID] は出典です。消さずに渡すと、根拠を追いやすくなります。
+※ File Paths は、パック内での整理用のパスです。ファイル本体は自動では書き出されません。
+  必要なファイルは案件画面からダウンロードして、プロジェクトに置いてください。
+
+
+■ B. MCP で接続する
+
+▼ 1. APIトークンを作る
+・「設定 → MCP / API」→「トークンを発行」を押し、名前（例：claude-code）を入力します。
+・トークン（imt_ で始まる文字列）は一度だけ表示されます。安全な場所に控えてください。
+・トークン管理には Owner / Admin 権限が必要です。
+・トークンは、発行したユーザーの権限で動きます（そのユーザーの組織のデータだけを扱えます）。
+・不要になったら一覧の「失効」で無効化してください。
+
+▼ 2. Claude Code に登録する
+  claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxxxxxxx -- npm --prefix /path/to/024-intakemint run mcp
+
+・/path/to/024-intakemint は、IntakeMint を置いたフォルダの絶対パスに置き換えてください。
+・MCP サーバーは、Webサーバーとは別のプロセスとして、自分でデータベースに接続します。
+  そのため DATABASE_URL など、サーバーと同じ環境変数を MCP 側にも渡してください。
+    例：claude mcp add intakemint --env INTAKEMINT_API_TOKEN=imt_xxx --env DATABASE_URL=postgres://... -- npm --prefix /path/to/024-intakemint run mcp
+・組み込みの PGlite は1つのプロセスからしか使えません。Webサーバーを動かしたまま MCP も使う場合は、
+  PostgreSQL（DATABASE_URL）で運用してください。PGlite のメモリ上データ（PGLITE_DIR 未指定）には
+  MCP から接続できません。
+・接続がうまくいかない場合は、npm の実行ログが邪魔をしている可能性があります。
+  npm の後ろに --silent を付けて（npm --silent --prefix ... run mcp）試してください。
+
+▼ 3. 使えるツール
+
+読み取り（確認なしで実行）
+・get_intake_status ……… 開始できるか、進捗（分母/分子）、Readyを妨げている理由
+・get_missing_items ……… 未提出・一部提出・差し戻し・確認待ちの項目と、未回答の追加質問
+・get_ready_cases ………… Ready（開始可能）の案件一覧
+・search_intakes ………… 案件・クライアント・回答・ファイル名を検索（権限内）
+・prepare_handoff ………… Handoff をプレビュー生成（保存しない）
+
+書き込み（confirm:true が必要）
+・create_intake ……………… 公開済みフォームから案件を作成（お客様への送信はしない）
+・review_response ………… 必要項目を承認 / 差し戻し / 要確認にする（差し戻し理由はお客様に表示）
+・request_more_information … お客様のポータルに追加質問を表示する
+・draft_reminder …………… リマインドの下書きを作る（送信はしない）
+・generate_intake_package … 案件開始パックを生成して保存する
+
+書き込みツールは、confirm:true を付けない限り「何をするか」のプレビューだけを返します。
+Claude Code があなたに内容を確認し、承認された場合にだけ confirm:true で実行する仕組みです。
+実行した書き込み操作は監査ログ（mcp.ツール名）に記録されます。
+
+▼ 4. MCP でできないこと
+・メールの送信、お客様への直接の連絡（リンク送付・リマインド送信）はできません
+・共有リンクの発行、Ready のサインオフ・上書き、案件の削除もできません
+・リマインドの送信は、アプリ上で担当者が承認する必要があります
+
+▼ 5. 質問の例
+・「IntakeMint で ○○案件は開始できる？足りないものは？」
+・「Ready の案件を一覧にして」
+・「○○案件の Handoff を Web Development で作って、実装計画を立てて」
+・「目的が曖昧なので、追加質問をポータルに出す下書きを作って（実行前に確認して）」

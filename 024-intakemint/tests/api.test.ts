@@ -184,3 +184,20 @@ describe('#30 audit log', () => {
     expect(JSON.stringify(rows)).not.toContain('株式会社A')
   })
 })
+
+describe('URL ingestion (SSRF) route', () => {
+  it('is disabled by default and rejects internal addresses when enabled', async () => {
+    const s = await httpLogin(a, A.email)
+    const h = { cookie: s.cookie, 'x-csrf-token': s.csrf }
+    expect((await a.inject({ method: 'POST', url: `/api/cases/${caseA}/reference-title`, headers: h, payload: { url: 'http://169.254.169.254/' } })).statusCode).toBe(403)
+    await a.inject({ method: 'PATCH', url: '/api/org/settings', headers: h, payload: { allowUrlTitleFetch: true } })
+    const r = await a.inject({ method: 'POST', url: `/api/cases/${caseA}/reference-title`, headers: h, payload: { url: 'http://169.254.169.254/latest/meta-data' } })
+    expect(r.statusCode).toBe(400); expect(r.json().code).toBe('url_rejected')
+    expect((await a.inject({ method: 'POST', url: `/api/cases/${caseA}/reference-title`, headers: h, payload: { url: 'http://localhost:8787/api/health' } })).statusCode).toBe(400)
+  })
+  it('lists connectors (built-in upload/export, external planned)', async () => {
+    const s = await httpLogin(a, A.email)
+    const r = (await a.inject({ method: 'GET', url: '/api/org/connectors', headers: { cookie: s.cookie } })).json()
+    expect(r.filter((c: any) => c.status === 'built_in').map((c: any) => c.id)).toEqual(['upload', 'export'])
+  })
+})

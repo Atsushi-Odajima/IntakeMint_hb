@@ -26,6 +26,8 @@ import { signObjectUrl, verifySignedUrl, safeEqual } from './security/crypto'
 import { sampleTemplates } from '../shared/sampleTemplates'
 import { ROLES } from '../shared/types'
 import { audit } from './services/audit'
+import { fetchTitle } from './security/ssrf'
+import { CONNECTORS } from './connectors'
 
 const SESSION_COOKIE = 'im_session'
 
@@ -113,7 +115,7 @@ export async function buildApp(ctx: Ctx, opts: { webDist?: string; logger?: bool
     reply.setCookie(SESSION_COOKIE, s.token, { ...cookieOpts, expires: s.expires })
     return { csrf: s.csrf }
   })
-  app.post('/api/auth/login', { config: { rateLimit: { max: 10, timeWindow: '1 minute' } } }, async (req, reply) => {
+  app.post('/api/auth/login', { config: { rateLimit: { max: Number(process.env.LOGIN_RATE_MAX ?? 10), timeWindow: '1 minute' } } }, async (req, reply) => {
     const b = parse(z.object({ email: z.string().max(200), password: z.string().max(200) }), req.body)
     const s = await orgs.login(ctx, b.email, b.password, ip(req))
     reply.setCookie(SESSION_COOKIE, s.token, { ...cookieOpts, expires: s.expires })
@@ -204,6 +206,17 @@ export async function buildApp(ctx: Ctx, opts: { webDist?: string; logger?: bool
   app.get('/api/org/ai-usage', async (req) => {
     const a = await internal(req); requirePerm(a, 'read')
     return (await ctx.db.query(`SELECT provider, external, purpose, count(*)::int AS calls, sum(input_chars)::int AS chars FROM ai_calls WHERE org_id=$1 GROUP BY provider, external, purpose`, [a.orgId])).rows
+  })
+
+  app.get('/api/org/connectors', async (req) => { const a = await internal(req); requirePerm(a, 'read'); return CONNECTORS.map(({ id, label, kinds, scopes, status }) => ({ id, label, kinds, scopes, status })) })
+  // Optional URL ingestion (reference site title) — disabled unless the org enables it; SSRF-guarded.
+  app.post('/api/cases/:id/reference-title', { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (req) => {
+    const a = await internal(req); requirePerm(a, 'case.edit')
+    await cases.loadState(ctx.db, a.orgId, parse(uuid, P(req).id))
+    const s = await cases.orgSettings(ctx.db, a.orgId)
+    if (!s.allowUrlTitleFetch) throw forbidden('URL取得は設定で無効になっています')
+    const url = parse(z.object({ url: z.string().url().max(2000) }), req.body).url
+    try { return { title: await fetchTitle(url) } } catch (e) { throw new HttpError(400, (e as Error).message, 'url_rejected') }
   })
 
   // ---------- templates ----------

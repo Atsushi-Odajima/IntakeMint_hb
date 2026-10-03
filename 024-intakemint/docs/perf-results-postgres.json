@@ -1,0 +1,116 @@
+{
+  "db": "postgres",
+  "date": "2026-10-03T07:15:00.550Z",
+  "node": "v22.22.0",
+  "scales": [
+    {
+      "cases": 10,
+      "createAndAnswerTotalMs": 276,
+      "perCaseMs": 27.6,
+      "dashboardMs": {
+        "p50": 1.7,
+        "max": 32.4
+      },
+      "searchMs": {
+        "p50": 1,
+        "max": 4.1
+      },
+      "packageMs": {
+        "p50": 13.6,
+        "max": 18.2
+      },
+      "recomputeMs": {
+        "p50": 7,
+        "max": 7.9
+      },
+      "uploadMs": {
+        "p50": 26.6,
+        "max": 30.9
+      },
+      "reminderScanMs": {
+        "p50": 46.8,
+        "max": 46.8,
+        "planned": 0
+      }
+    },
+    {
+      "cases": 100,
+      "createAndAnswerTotalMs": 1986,
+      "perCaseMs": 19.9,
+      "dashboardMs": {
+        "p50": 2.1,
+        "max": 27.1
+      },
+      "searchMs": {
+        "p50": 1.6,
+        "max": 3.1
+      },
+      "packageMs": {
+        "p50": 11.2,
+        "max": 12
+      },
+      "recomputeMs": {
+        "p50": 5.6,
+        "max": 10.2
+      },
+      "uploadMs": {
+        "p50": 18.6,
+        "max": 24.3
+      },
+      "reminderScanMs": {
+        "p50": 184.9,
+        "max": 184.9,
+        "planned": 0
+      }
+    },
+    {
+      "cases": 1000,
+      "createAndAnswerTotalMs": 17517,
+      "perCaseMs": 17.5,
+      "dashboardMs": {
+        "p50": 2.2,
+        "max": 29.2
+      },
+      "searchMs": {
+        "p50": 12.2,
+        "max": 13.2
+      },
+      "packageMs": {
+        "p50": 10.3,
+        "max": 16.1
+      },
+      "recomputeMs": {
+        "p50": 5.5,
+        "max": 6.1
+      },
+      "uploadMs": {
+        "p50": 19.6,
+        "max": 20.4
+      },
+      "reminderScanMs": {
+        "p50": 1732.4,
+        "max": 1732.4,
+        "planned": 0
+      }
+    }
+  ],
+  "synthetic": {
+    "cases": 50000,
+    "responses": 600000,
+    "files": 500000,
+    "loadMs": 35202,
+    "dashboardMs": {
+      "p50": 45.5,
+      "max": 71.2
+    },
+    "searchMs": {
+      "p50": 50,
+      "max": 55.3
+    },
+    "responsesByCaseMs": {
+      "p50": 0.5,
+      "max": 1.2
+    },
+    "dashboardPlan": "Limit  (cost=0.41..8.67 rows=20 width=24) |   ->  Index Scan using cases_org_status_activity_idx on cases  (cost=0.41..2586.32 rows=6267 width=24) |         Index Cond: ((org_id = 'e60a7b87-e093-41de-820c-8fe17189b617'::uuid) AND (status = 'needs_internal_review'::text))"
+  }
+}

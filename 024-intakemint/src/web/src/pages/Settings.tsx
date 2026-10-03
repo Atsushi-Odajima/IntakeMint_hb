@@ -45,6 +45,7 @@ export default function Settings() {
         <section className="card stack">
           <h2>AIとプライバシー</h2>
           <label className="check"><input type="checkbox" checked={s.aiEnabled} disabled={!canOrg} onChange={(e) => save({ aiEnabled: e.target.checked }, e.target.checked ? 'AIをONにしました' : 'AIをOFFにしました（AI用インデックスを削除）')} /><span>組織全体でAI機能を使う<div className="help">OFFにすると、すべての案件でAIプロバイダへの呼び出しが0になり、AI用の抽出テキストも削除されます。案件ごと・ファイルごとにもOFFにできます。</div></span></label>
+          <label className="check"><input type="checkbox" checked={!!s.allowUrlTitleFetch} disabled={!canOrg} onChange={(e) => save({ allowUrlTitleFetch: e.target.checked })} /><span>参考サイトURLのタイトル取得を許可する（既定OFF）<div className="help">外部URLへサーバーからアクセスします。社内ネットワーク・メタデータアドレスへのアクセスは常に拒否されます（SSRF対策）。</div></span></label>
           <AiUsage />
           <div className="alert alert-info small">初期設定のAIは「ローカル判定（外部送信なし）」です。外部AI（Anthropic等）への送信は、運用者がサーバー設定（AI_ALLOW_EXTERNAL）で明示的に許可した場合のみ行われます。回答本文を分析ツール（Analytics）に流用することはありません。</div>
         </section>
