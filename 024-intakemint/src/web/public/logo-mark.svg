@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IntakeMint">
+  <defs>
+    <linearGradient id="l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F4A44"/><stop offset="1" stop-color="#0F2D2A"/></linearGradient>
+    <linearGradient id="r" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9BD9B6"/><stop offset="1" stop-color="#3CB371"/></linearGradient>
+  </defs>
+  <path d="M8 10c13 1 22 9 22 24v20C17 52 8 43 8 30z" fill="url(#l)"/>
+  <path d="M56 14c-13 1-21 9-21 23v19c13-2 21-11 21-24z" fill="url(#r)"/>
+</svg>

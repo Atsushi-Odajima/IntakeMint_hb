@@ -72,7 +72,7 @@ export async function seedSample(ctx: Ctx, opts: { password?: string } = {}): Pr
   const client2: Actor = { type: 'client', orgId, caseId: c2 }
   await saveAnswers(ctx, client2, c2, {
     company_name: 'サンプル商店', company_address: '大阪府大阪市サンプル町4-5-6', ceo_message: '創業以来、手づくりの品質にこだわってきました。これからも一つひとつ丁寧にお届けします。新しいサイトで私たちの商品の魅力をお伝えします。',
-    site_purpose: ['company', 'inquiry'], site_goal: '問い合わせを月20件に増やし、法人の大口注文につなげたい', business_description: '手づくり家具の製造販売',
+    site_purpose: ['company', 'inquiry'], site_goal: '問い合わせを月20件に増やし、法人の大口注文につなげたい', business_description: '無垢材を使った手づくり家具の製造販売と、店舗内装の施工を行っています。',
     target_audience: '30〜50代の住宅購入層、法人の店舗内装担当', reference_sites: [{ url: 'https://example.net/', reason: '施工事例の見せ方' }],
     contact_name: 'サンプル 次郎', contact_email: 'shop@sample-shop.example', privacy_ack: true, launch_date: addDays(today, 60),
   })

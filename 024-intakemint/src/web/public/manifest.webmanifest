@@ -1,0 +1,19 @@
+{
+  "name": "IntakeMint — AIヒアリング・情報回収",
+  "short_name": "IntakeMint",
+  "description": "仕事開始に必要な情報・ファイルを、AIが質問・不足確認・整理して全部揃うまで管理します。",
+  "id": "/app/",
+  "start_url": "/app/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F8F9F7",
+  "theme_color": "#0F2D2A",
+  "lang": "ja",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
