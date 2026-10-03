@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "product": "IntakeMint",
+    "currency": "USD",
+    "checked": "2026-10-03",
+    "notes": "confidence: official = 公式ページ/公式docsを直接取得または公式ドメイン限定検索で確認; secondary = 第三者記事; unverified = 情報源間で食い違い/推定。詳細は ../SOURCE_NOTES.md。多くの公式ページは調査環境のegress proxyで直接取得できなかったため、本番前に要再確認。"
+  },
+  "items": [
+    {"item": "postgres_managed_small_supabase_pro_plan", "unit": "per month (org, includes $10 compute credit = 1 Micro instance)", "price_usd": 25.0, "source_url": "https://supabase.com/docs/guides/platform/billing-faq", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "postgres_managed_small_supabase_micro_compute", "unit": "per month (~$0.01344/hour)", "price_usd": 10.0, "source_url": "https://supabase.com/docs/guides/platform/manage-your-usage/compute", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "postgres_managed_small_supabase_small_compute", "unit": "per month (~$0.0206/hour)", "price_usd": 15.0, "source_url": "https://supabase.com/docs/guides/platform/manage-your-usage/compute", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "postgres_managed_neon_launch_compute", "unit": "per CU-hour (1 CU = 1 vCPU / 4GB, scale-to-zero, no monthly minimum)", "price_usd": 0.106, "source_url": "https://swyftstack.com/blog/neon-pricing-explained", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "postgres_managed_neon_launch_storage", "unit": "per GB-month", "price_usd": 0.35, "source_url": "https://swyftstack.com/blog/neon-pricing-explained", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "postgres_managed_neon_free", "unit": "per month (100 CU-hours/project, 1GB/project)", "price_usd": 0.0, "source_url": "https://neon.com/faqs/free-plan-limits-and-quotas", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "postgres_managed_aws_rds_db_t4g_micro", "unit": "per month (Single-AZ us-east-1, ~$0.016/hour, storage extra)", "price_usd": 11.68, "source_url": "https://selfhost.dev/blog/aws-rds-cost-breakdown-2026/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "postgres_managed_aws_rds_gp3_storage", "unit": "per GB-month", "price_usd": 0.115, "source_url": "https://selfhost.dev/blog/aws-rds-cost-breakdown-2026/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "postgres_managed_render_basic_256mb", "unit": "per month", "price_usd": 6.0, "source_url": "https://www.budgetforge.dev/tools/render-pricing-2026", "checked": "2026-10-03", "confidence": "secondary"},
+
+    {"item": "object_storage_cloudflare_r2_standard", "unit": "per GB-month (first 10 GB-month free)", "price_usd": 0.015, "source_url": "https://developers.cloudflare.com/r2/pricing/", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "object_storage_cloudflare_r2_class_a_ops", "unit": "per 1M requests (first 1M/month free)", "price_usd": 4.5, "source_url": "https://developers.cloudflare.com/r2/pricing/", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "object_storage_cloudflare_r2_class_b_ops", "unit": "per 1M requests (first 10M/month free)", "price_usd": 0.36, "source_url": "https://developers.cloudflare.com/r2/pricing/", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "egress_cloudflare_r2", "unit": "per GB", "price_usd": 0.0, "source_url": "https://developers.cloudflare.com/r2/pricing/", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "object_storage_aws_s3_standard_us_east_1", "unit": "per GB-month (first 50TB)", "price_usd": 0.023, "source_url": "https://www.cloudzero.com/blog/s3-pricing/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "egress_aws_internet_first_10tb", "unit": "per GB (first 100GB/month free, aggregated)", "price_usd": 0.09, "source_url": "https://www.cloudzero.com/blog/s3-pricing/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "object_storage_backblaze_b2", "unit": "per GB-month ($6.95/TB-month)", "price_usd": 0.00695, "source_url": "https://www.backblaze.com/cloud-storage/pricing", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "egress_backblaze_b2_over_3x_storage", "unit": "per GB (free up to 3x avg monthly storage)", "price_usd": 0.01, "source_url": "https://www.backblaze.com/cloud-storage/pricing", "checked": "2026-10-03", "confidence": "secondary"},
+
+    {"item": "email_amazon_ses", "unit": "per 1000 emails (no SES-specific free tier for accounts after 2026-07-21; plan surcharge unverified)", "price_usd": 0.10, "source_url": "https://aws.amazon.com/blogs/messaging-and-targeting/introducing-amazon-simple-email-service-ses-pricing-plans/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "email_resend_pro_plan", "unit": "per month (50,000 emails included; free tier 3,000/month, 100/day)", "price_usd": 20.0, "source_url": "https://automationatlas.io/answers/resend-pricing-explained-2026/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "email_resend_overage", "unit": "per 1000 emails", "price_usd": 0.90, "source_url": "https://automationatlas.io/answers/resend-pricing-explained-2026/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "email_postmark_basic_plan", "unit": "per month (10,000 emails included)", "price_usd": 15.0, "source_url": "https://www.sequenzy.com/pricing/postmark", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "email_postmark_basic_overage", "unit": "per 1000 emails", "price_usd": 1.80, "source_url": "https://www.sequenzy.com/pricing/postmark", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "email_sendgrid_essentials_50k", "unit": "per month (50,000 emails; no permanent free plan)", "price_usd": 19.95, "source_url": "https://www.sendx.io/blog/sendgrid-pricing", "checked": "2026-10-03", "confidence": "secondary"},
+
+    {"item": "llm_claude_sonnet_5_5_input", "unit": "per 1M input tokens", "price_usd": 2.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_sonnet_5_5_output", "unit": "per 1M output tokens", "price_usd": 10.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_sonnet_5_5_cache_read", "unit": "per 1M tokens", "price_usd": 0.20, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_haiku_4_5_input", "unit": "per 1M input tokens", "price_usd": 1.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_haiku_4_5_output", "unit": "per 1M output tokens", "price_usd": 5.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_opus_5_5_input", "unit": "per 1M input tokens", "price_usd": 4.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_opus_5_5_output", "unit": "per 1M output tokens", "price_usd": 20.0, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_claude_batch_discount", "unit": "multiplier on standard price (Batch API)", "price_usd": 0.5, "source_url": "https://claude.com/pricing", "checked": "2026-10-03", "confidence": "official"},
+    {"item": "llm_openai_gpt_5_5_input", "unit": "per 1M input tokens", "price_usd": 5.0, "source_url": "https://developers.openai.com/api/docs/models/gpt-5.5", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "llm_openai_gpt_5_5_output", "unit": "per 1M output tokens", "price_usd": 30.0, "source_url": "https://developers.openai.com/api/docs/models/gpt-5.5", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "llm_openai_gpt_5_mini_input", "unit": "per 1M input tokens", "price_usd": 0.25, "source_url": "https://developers.openai.com/api/docs/models/gpt-5-mini", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "llm_openai_gpt_5_mini_output", "unit": "per 1M output tokens", "price_usd": 2.0, "source_url": "https://developers.openai.com/api/docs/models/gpt-5-mini", "checked": "2026-10-03", "confidence": "secondary"},
+
+    {"item": "ocr_google_cloud_vision_document_text", "unit": "per 1000 pages/units (1,001-5M; first 1,000/month free)", "price_usd": 1.50, "source_url": "https://cloud.google.com/vision/pricing", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "ocr_aws_textract_detect_document_text", "unit": "per 1000 pages", "price_usd": 1.50, "source_url": "https://www.wring.co/blog/aws-textract-pricing-guide", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "ocr_aws_textract_analyze_forms_tables", "unit": "per 1000 pages", "price_usd": 65.0, "source_url": "https://www.wring.co/blog/aws-textract-pricing-guide", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "ocr_azure_document_intelligence_read", "unit": "per 1000 pages (F0: 500 pages/month free)", "price_usd": 1.50, "source_url": "https://docuocr.com/blog/azure-document-intelligence-pricing", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "ocr_azure_document_intelligence_layout", "unit": "per 1000 pages", "price_usd": 10.0, "source_url": "https://docuocr.com/blog/azure-document-intelligence-pricing", "checked": "2026-10-03", "confidence": "secondary"},
+
+    {"item": "malware_scan_aws_guardduty_s3_data", "unit": "per GB scanned", "price_usd": 0.09, "source_url": "https://aws.amazon.com/about-aws/whats-new/2025/02/amazon-guardduty-malware-protection-s3-price-reduction", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "malware_scan_aws_guardduty_s3_objects", "unit": "per 1000 objects evaluated", "price_usd": 0.215, "source_url": "https://aws.amazon.com/about-aws/whats-new/2025/02/amazon-guardduty-malware-protection-s3-price-reduction", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "malware_scan_cloudmersive_basic", "unit": "per month (10,000 calls)", "price_usd": 19.99, "source_url": "https://cloudmersive.com/pricing-small-business", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "malware_scan_clamav_self_hosted", "unit": "license cost (GPLv2; run as separate process; infra cost only)", "price_usd": 0.0, "source_url": "https://github.com/Cisco-Talos/clamav", "checked": "2026-10-03", "confidence": "official"},
+
+    {"item": "hosting_fly_io_shared_cpu_1x_512mb", "unit": "per month (always-on; after 2026-10-01 memory repricing)", "price_usd": 3.19, "source_url": "https://fly.io/docs/about/pricing/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "hosting_fly_io_shared_cpu_1x_1gb", "unit": "per month (always-on)", "price_usd": 5.70, "source_url": "https://fly.io/docs/about/pricing/", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "hosting_render_starter_web_service", "unit": "per month (0.5 vCPU / 512MB)", "price_usd": 7.0, "source_url": "https://www.budgetforge.dev/tools/render-pricing-2026", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "hosting_railway_hobby", "unit": "per month minimum (includes $5 usage)", "price_usd": 5.0, "source_url": "https://www.budgetforge.dev/tools/railway-pricing-2026", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "hosting_cloudflare_workers_paid", "unit": "per month (10M requests + 30M CPU-ms included)", "price_usd": 5.0, "source_url": "https://developers.cloudflare.com/workers/platform/pricing/", "checked": "2026-10-03", "confidence": "official"},
+
+    {"item": "auth_clerk_pro", "unit": "per month billed annually (50,000 MRU included; free tier 50,000 MRU)", "price_usd": 20.0, "source_url": "https://clerk.com/pricing", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "auth_auth0_b2c_essentials", "unit": "per month starting (500 MAU; free tier 25,000 MAU)", "price_usd": 35.0, "source_url": "https://idsync.com/guides/auth0-pricing", "checked": "2026-10-03", "confidence": "secondary"},
+    {"item": "auth_self_hosted_session_magic_link", "unit": "license cost (own implementation; email cost only)", "price_usd": 0.0, "source_url": "https://github.com/lucia-auth/lucia/discussions/1714", "checked": "2026-10-03", "confidence": "official"}
+  ]
+}
